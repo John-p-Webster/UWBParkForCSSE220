@@ -1,0 +1,116 @@
+@startuml
+allowmixing
+
+class ParkingManager{
+CreateNewProfile()
+CreateNewDevice(DeviceID, DeviceType)
+CreateNewParkingLot()
+CreateNewServer(ServerIP, Port)
+}
+
+class Server{
+ServerIP
+Port
+IncomingData
+ProcessData()
+}
+
+class ParkingLot{
+Name
+ParkingLotID
+Bounds
+AnchorIDs
+
+getBounds()
+AddParkingSpace()
+SearchSpacesForTag(Tag)
+Update()
+}
+
+class ParkingSpace{
+ParkingSpaceID
+UpdateStatus(status)
+Update()
+}
+
+class UWBTag{
+HasLocationChanged
+Flag
+LicensePlateNumber
+
+AssignProfile(Profile)
+UpdateLocation(double[] newCoordinates)
+IsWithinCoordinates(double[,] coordinateRanges)
+LocationChanged()
+}
+
+class Testing{
+}
+
+class Anchor{
+TagsInRange()
+AddTagInRange()
+RemoveTagInRange()
+}
+
+class Profile{
+Name
+PermitType
+Flag
+ProfileID
+
+AssignTag(Tag)
+}
+
+class Camera{
+To Be Implemented
+}
+
+abstract Sensor{
+CarDetected
+GetDetectionStatus()
+}
+
+class PIRSensor{
+}
+
+abstract Device{
+DeviceID
+DeviceType
+
+Location
+
+GetID()
+GetCoordinates()
+ReceiveData()
+}
+
+Testing -> ParkingManager
+
+ParkingManager ->Server
+ParkingManager -->"*" ParkingLot
+ParkingManager -->"*"Device
+ParkingManager -->"*"Profile
+
+ParkingLot ->"*" ParkingSpace
+ParkingSpace -l> Sensor
+
+
+
+Device <|-- Sensor
+
+Sensor <|-- PIRSensor
+Device <|-- Camera
+Device <|-- UWBTag
+Device <|--Anchor
+
+ParkingLot -->"*"Anchor
+ParkingLot -->"*"Camera
+
+Camera -[hidden]> Anchor
+Anchor -[hidden]> Sensor
+
+UWBTag -l> Profile
+Profile ->"*" UWBTag
+
+@enduml
